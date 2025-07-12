@@ -45,45 +45,10 @@ export default function Login({ setAuthorized }) {
             boxShadow: '0 0 8px rgba(0,0,0,0.4)',
           }}
         >
-<<<<<<< HEAD
-          <LockIcon sx={{ fontSize: 28 }} />
-          ACCESO RESTRINGIDO
-        </DialogTitle>
-
-        <DialogContent sx={{ px: { xs: 2, sm: 4 }, py: 3 }}>
-          <Typography variant="body1" mb={2} fontFamily="monospace">
-            El presupuesto fue enviado. Para continuar utilizando la plataforma, es necesario realizar un abono.
-          </Typography>
-
-          <Divider sx={{ my: 2, bgcolor: '#00ff90' }} />
-
-          <Stack spacing={1} fontFamily="monospace">
-            <Typography><PaymentIcon sx={{ mr: 1, verticalAlign: 'middle' }} /> Adelanto: $10.000</Typography>
-            <Typography><InventoryIcon sx={{ mr: 1, verticalAlign: 'middle' }} /> Plan básico: $45.000</Typography>
-            <Typography><RocketLaunchIcon sx={{ mr: 1, verticalAlign: 'middle' }} /> Plan avanzado: $80.000</Typography>
-          </Stack>
-
-          <Divider sx={{ my: 3, bgcolor: '#00ff90' }} />
-
-          <Typography variant="body1" align="center" fontFamily="monospace">
-            <LoopIcon sx={{ verticalAlign: 'middle', mr: 1 }} />
-            Transferir al alias: <strong>freud.foucault.jung</strong>
-          </Typography>
-
-          <Typography mt={3} fontFamily="monospace">
-            Una vez recibido el pago, se realizarán los ajustes necesarios y la página estará habilitada el día <strong>Lunes</strong> para que continúes con tus ventas.
-          </Typography>
-
-          <Button
-            variant="outlined"
-            fullWidth
-            startIcon={<WhatsAppIcon />}
-=======
           <Box
             component="img"
             src={logo}
             alt="Hannah Logo"
->>>>>>> bb276f8 (Cambio de diseño)
             sx={{
               width: 40,
               height: 40,
