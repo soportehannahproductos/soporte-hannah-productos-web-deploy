@@ -7,14 +7,16 @@ export default function Login({ setAuthorized }) {
   const [error, setError] = useState('')
   const navigate = useNavigate() // 👈 Hook para redireccionar
 
-  const handleSubmit = () => {
-    if (password === 'Angel2025') {
-      setAuthorized(true)
-      navigate('/') // 👈 Redirigir al home
-    } else {
-      setError('Clave incorrecta')
-    }
+const handleSubmit = () => {
+  if (password === 'Angel2025') {
+    setAuthorized(true)
+    localStorage.setItem('authorized', 'true') // ✅ línea clave
+    navigate('/')
+  } else {
+    setError('Clave incorrecta')
   }
+}
+
 
   return (
     <Box
@@ -29,7 +31,8 @@ export default function Login({ setAuthorized }) {
       }}
     >
       <Typography variant="h5" mb={3}>
-        🔒 Ingresá al catálogo
+             
+        🔒 Hannah produtos
       </Typography>
       <TextField
         type="password"

@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import {
   AppBar,
   Toolbar,
@@ -11,11 +12,13 @@ import {
 } from '@mui/material'
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
 import MenuIcon from '@mui/icons-material/Menu'
+import { useCart } from '../context/CartContext'
 
 export default function Header() {
-  const cartCount = 0 // aquí luego puede venir del estado
+  const { cart } = useCart()
+  const navigate = useNavigate()
   const [anchorEl, setAnchorEl] = useState(null)
-
+  
   const categorias = ['Indumentaria', 'Herramientas', 'Artefactos']
 
   const handleMenuOpen = (event) => {
@@ -29,30 +32,11 @@ export default function Header() {
   return (
     <AppBar position="static" sx={{ bgcolor: '#1e1e1e' }}>
       <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Typography variant="h6" component="div" sx={{ fontWeight: 'bold' }}>
+        <Typography variant="h6" component="div" sx={{ fontWeight: 'bold', cursor: 'pointer' }} onClick={() => navigate('/')}>
           Hannah Productos
         </Typography>
 
-        {/* Categorías para pantallas md+ */}
-        <Box
-          sx={{
-            display: { xs: 'none', md: 'flex' },
-            gap: 3,
-            alignItems: 'center',
-          }}
-        >
-          {categorias.map((cat) => (
-            <Typography
-              key={cat}
-              component="span"
-              sx={{ cursor: 'pointer', '&:hover': { color: 'primary.main' } }}
-            >
-              {cat}
-            </Typography>
-          ))}
-        </Box>
-
-        {/* Íconos para xs (hamburguesa + carrito) y md (solo carrito) */}
+        {/* Íconos */}
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           {/* Menú hamburguesa solo en xs */}
           <IconButton
@@ -64,15 +48,19 @@ export default function Header() {
             <MenuIcon />
           </IconButton>
 
-          {/* Carrito siempre visible */}
-          <IconButton color="inherit" aria-label="carrito">
-            <Badge badgeContent={cartCount} color="error">
+          {/* Carrito con badge */}
+          <IconButton
+            color="inherit"
+            aria-label="carrito"
+            onClick={() => navigate('/cart')}
+          >
+            <Badge badgeContent={cart.length} color="error">
               <ShoppingCartIcon />
             </Badge>
           </IconButton>
         </Box>
 
-        {/* Menú desplegable para categorías en xs */}
+        {/* Menú desplegable para categorías solo en xs */}
         <Menu
           anchorEl={anchorEl}
           open={Boolean(anchorEl)}

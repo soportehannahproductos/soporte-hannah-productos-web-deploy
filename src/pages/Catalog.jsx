@@ -9,51 +9,8 @@ import { styled } from '@mui/material/styles'
 import ProductCard from '../components/ProductCard'
 import ProductModal from '../components/ProductModal'
 import AllInclusiveIcon from '@mui/icons-material/AllInclusive'
-
-const products = [
-  {
-    id: 1,
-    title: 'Remera estampada',
-    description: 'Remera cómoda y fresca para todos los días',
-    price: 2500,
-    image:
-      'https://d22fxaf9t8d39k.cloudfront.net/c5430e85068cebab6fddd3824113d69230248e418fc62dd0315633cad70bd82f2877.jpeg',
-    category: 'Indumentaria',
-  },
-  {
-    id: 2,
-    title: 'Taladro eléctrico',
-    description: 'Potente taladro para bricolaje y trabajo profesional',
-    price: 10000,
-    image: 'https://www.abrafersrl.com.ar/wp-content/uploads/LD12S.jpg',
-    category: 'Herramientas',
-  },
-  {
-    id: 3,
-    title: 'Auriculares inalámbricos',
-    description: 'Sonido de alta calidad sin cables',
-    price: 6000,
-    image:
-      'https://acdn-us.mitiendanube.com/stores/884/018/products/gamma-hogar-2022-10-25t104326-7711-f545577cf5cc3a201b16667059054363-1024-1024.jpg',
-    category: 'Artefactos',
-  },
-  {
-    id: 4,
-    title: 'Lámpara de escritorio',
-    description: 'Lámpara LED con diseño moderno y eficiente',
-    price: 3500,
-    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQHkjDlk5YYJtP-uNhp9nhhcyGj2nzrtWg25g&s',
-    category: 'Lámparas',
-  },
-  {
-    id: 5,
-    title: 'Cargador portátil',
-    description: 'Carga rápida para tu móvil en cualquier lugar',
-    price: 4000,
-    image: 'https://www.hola.com/horizon/original_aspect_ratio/8d5ab6f8b5f5-axneb-a.jpg',
-    category: 'Cargadores',
-  },
-]
+import { products } from '../data/products'
+import { useCart } from '../context/CartContext'
 
 const categories = [
   { label: 'Todas', icon: <AllInclusiveIcon /> },
@@ -64,7 +21,6 @@ const categories = [
   { label: 'Cargadores', icon: <PowerIcon /> },
 ]
 
-// IconButton estilizado para íconos blancos y neón al activo/hover
 const WhiteIconButton = styled(IconButton)(({ active }) => ({
   color: '#fff',
   transition: 'color 0.3s ease, text-shadow 0.3s ease',
@@ -79,13 +35,18 @@ const WhiteIconButton = styled(IconButton)(({ active }) => ({
 }))
 
 export default function Catalog() {
-  const [cart, setCart] = useState([])
   const [selectedProduct, setSelectedProduct] = useState(null)
   const [selectedCategory, setSelectedCategory] = useState('Todas')
+  const [showConfirmModal, setShowConfirmModal] = useState(false)
+  const { addToCart } = useCart()
 
   const handleAddToCart = (product) => {
-    setCart((prev) => [...prev, product])
-    alert(`${product.title} agregado al carrito`)
+    addToCart(product)
+    setShowConfirmModal(true)
+  }
+
+  const handleCloseConfirm = () => {
+    setShowConfirmModal(false)
   }
 
   const filteredProducts =
@@ -95,7 +56,7 @@ export default function Catalog() {
 
   return (
     <>
-      {/* Categorías con íconos blancos y efecto neón */}
+      {/* Categorías con íconos */}
       <Box
         sx={{
           display: 'flex',
@@ -139,17 +100,35 @@ export default function Catalog() {
 
       <Grid container spacing={3} justifyContent="center">
         {filteredProducts.map((product) => (
-          <Grid item key={product.id}>
+          <Grid item xs={6} sm={6} md={3} lg={3} key={product.id}>
             <ProductCard product={product} onClick={setSelectedProduct} neonBorder />
           </Grid>
         ))}
       </Grid>
 
+      {/* Modal principal de producto */}
       <ProductModal
         open={Boolean(selectedProduct)}
         onClose={() => setSelectedProduct(null)}
         product={selectedProduct}
-        onAdd={handleAddToCart}
+        onAdd={(product) => {
+          handleAddToCart(product)
+          setSelectedProduct(null)
+        }}
+      />
+
+      {/* Modal de confirmación */}
+      <ProductModal
+        open={showConfirmModal}
+        onClose={handleCloseConfirm}
+        product={{
+          title: '¡Se agregó correctamente!',
+          description: '',
+          image: 'https://cdn-icons-png.flaticon.com/512/190/190411.png', // ícono check verde o similar
+          price: 0,
+        }}
+        onAdd={() => {}}
+        isConfirmationModal={true}
       />
     </>
   )

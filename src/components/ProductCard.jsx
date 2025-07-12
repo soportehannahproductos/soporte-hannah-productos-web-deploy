@@ -11,19 +11,21 @@ import {
 
 export default function ProductCard({ product, onClick }) {
   return (
-    <Card
-      sx={{
-        width: 250,
-        height: 360,
-        display: 'flex',
-        flexDirection: 'column',
-        borderRadius: 2,
-        overflow: 'hidden',
-        boxShadow: 3,
-        backgroundColor: '#1e1e1e',
-        color: '#f0f0f0',
-      }}
-    >
+   <Card
+  sx={{
+    width: '100%',
+    maxWidth: 180,
+    height: 360,
+    display: 'flex',
+    flexDirection: 'column',
+    borderRadius: 2,
+    overflow: 'hidden',
+    boxShadow: 3,
+    backgroundColor: '#1e1e1e',
+    color: '#f0f0f0',
+    margin: '0 auto',
+  }}
+>
       <CardActionArea
         onClick={() => onClick(product)}
         sx={{
@@ -36,7 +38,7 @@ export default function ProductCard({ product, onClick }) {
           component="img"
           image={product.image}
           alt={product.title}
-          onError={(e) => { e.target.src = '/placeholder.png' }}
+          onError={(e) => { e.target.src = 'https://http2.mlstatic.com/D_NQ_NP_2X_957198-MLA49876337542_052022-F.webp' }}
           sx={{
             height: 180,
             width: '100%',
