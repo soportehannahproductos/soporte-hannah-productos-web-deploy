@@ -30,7 +30,7 @@ export default function Header() {
   }
 
   return (
-    <AppBar position="static" sx={{ bgcolor: '#1e1e1e' }}>
+    <AppBar position="static" sx={{ bgcolor: '#121212', boxShadow: 'none' }}>
       <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
         <Typography variant="h6" component="div" sx={{ fontWeight: 'bold', cursor: 'pointer' }} onClick={() => navigate('/')}>
           Hannah Productos
