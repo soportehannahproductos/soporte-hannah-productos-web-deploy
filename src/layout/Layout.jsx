@@ -10,15 +10,23 @@ export default function Layout({ children }) {
     <Box
       sx={{
         minHeight: '100vh',
-        bgcolor: '#121212',
-        color: '#fff',
+        background: 'linear-gradient(to right, #b3d4fc, #e8b3fc)', // fondo como el logo
+        color: '#222', // texto oscuro para contraste
         display: 'flex',
         flexDirection: 'column',
+        position: 'relative',
       }}
     >
+      {/* CABECERA */}
       <Header />
+
+      {/* CONTENIDO PRINCIPAL */}
       <Container sx={{ flexGrow: 1, py: 4 }}>{children}</Container>
+
+      {/* PIE DE PÁGINA */}
       <Footer />
+
+      {/* BOTONES FLOTANTES */}
       <WhatsAppButton />
       <ScrollToTopButton />
     </Box>

@@ -1,27 +1,11 @@
 import React, { useState } from 'react'
-import {
-  Box,
-  TextField,
-  Button,
-  Typography,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  Stack,
-  Divider,
-} from '@mui/material'
-import PaymentIcon from '@mui/icons-material/Payment'
-import InventoryIcon from '@mui/icons-material/Inventory'
-import RocketLaunchIcon from '@mui/icons-material/RocketLaunch'
-import LoopIcon from '@mui/icons-material/Loop'
-import WhatsAppIcon from '@mui/icons-material/WhatsApp'
-import LockIcon from '@mui/icons-material/Lock'
+import { Box, TextField, Button, Typography, Paper } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
+import logo from '../assets/logo2.png'
 
 export default function Login({ setAuthorized }) {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
-  const [openModal, setOpenModal] = useState(true)
   const navigate = useNavigate()
 
   const handleSubmit = () => {
@@ -30,47 +14,38 @@ export default function Login({ setAuthorized }) {
       localStorage.setItem('authorized', 'true')
       navigate('/')
     } else {
-      setError('Clave incorrecta')
+      setError('❌ Clave incorrecta')
     }
   }
 
-  const whatsappMessage = encodeURIComponent(
-    'Hola, ya realicé la transferencia del adelanto para continuar con el desarrollo. Adjunto comprobante.'
-  )
-  const whatsappLink = `https://wa.me/5491132752125?text=${whatsappMessage}`
-
   return (
-    <>
-      {/* Modal bloqueante estilo hacker pro */}
-      <Dialog
-        open={openModal}
-        disableEscapeKeyDown
-        disableBackdropClick
-        fullWidth
-        maxWidth="sm"
-        PaperProps={{
-          sx: {
-            bgcolor: '#121212',
-            color: '#00ff90',
-            border: '1px solid #00ff90',
-            borderRadius: 2,
-            boxShadow: '0 0 10px #00ff90',
-          },
-        }}
-      >
-        <DialogTitle
+    <Paper
+      elevation={6}
+      sx={{
+        maxWidth: 400,
+        mx: 'auto',
+        mt: 12,
+        p: 4,
+        borderRadius: 3,
+        background: 'linear-gradient(145deg, #1e1e1e, #2c2c2c)',
+        color: 'white',
+        textAlign: 'center',
+      }}
+    >
+      <Box sx={{ mb: 4, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <Box
           sx={{
-            fontWeight: 'bold',
-            textAlign: 'center',
-            color: '#00ff90',
-            fontFamily: 'monospace',
-            fontSize: '1.4rem',
+            width: 70,
+            height: 70,
+            bgcolor: 'white',
+            borderRadius: '50%',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            gap: 1,
+            boxShadow: '0 0 8px rgba(0,0,0,0.4)',
           }}
         >
+<<<<<<< HEAD
           <LockIcon sx={{ fontSize: 28 }} />
           ACCESO RESTRINGIDO
         </DialogTitle>
@@ -103,79 +78,84 @@ export default function Login({ setAuthorized }) {
             variant="outlined"
             fullWidth
             startIcon={<WhatsAppIcon />}
+=======
+          <Box
+            component="img"
+            src={logo}
+            alt="Hannah Logo"
+>>>>>>> bb276f8 (Cambio de diseño)
             sx={{
-              mt: 4,
-              borderColor: '#00ff90',
-              color: '#00ff90',
-              '&:hover': {
-                bgcolor: '#00ff90',
-                color: '#121212',
-              },
-              fontWeight: 'bold',
-              fontFamily: 'monospace',
+              width: 40,
+              height: 40,
+              objectFit: 'contain',
             }}
-            href={whatsappLink}
-            target="_blank"
-            rel="noopener noreferrer"
+          />
+        </Box>
+        <Box sx={{ ml: 2 }}>
+          <Typography
+            variant="h4"
+            sx={{
+              fontFamily: '"Great Vibes", cursive',
+              color: 'white',
+              textShadow: '1px 1px 3px rgba(0,0,0,0.4)',
+            }}
           >
-            Enviar comprobante por WhatsApp
-          </Button>
-        </DialogContent>
-      </Dialog>
+            Hannah
+          </Typography>
+          <Typography
+            variant="subtitle2"
+            sx={{
+              color: 'white',
+              letterSpacing: '6px',
+              fontWeight: 300,
+            }}
+          >
+            PRODUCTS
+          </Typography>
+        </Box>
+      </Box>
 
-      {/* Pantalla de login */}
-      <Box
+      <TextField
+        type="password"
+        placeholder="Clave secreta"
+        variant="filled"
+        fullWidth
+        value={password}
+        onChange={(e) => {
+          setPassword(e.target.value)
+          setError('')
+        }}
+        InputProps={{
+          sx: {
+            bgcolor: '#333',
+            color: 'white',
+            borderRadius: 1,
+          },
+        }}
+        InputLabelProps={{ style: { color: '#ccc' } }}
+        sx={{ mb: 2 }}
+      />
+
+      {error && (
+        <Typography color="error" sx={{ mb: 2, fontSize: '0.9rem' }}>
+          {error}
+        </Typography>
+      )}
+
+      <Button
+        variant="contained"
+        fullWidth
+        onClick={handleSubmit}
         sx={{
-          maxWidth: 400,
-          margin: '100px auto',
-          padding: 4,
-          bgcolor: '#1e1e1e',
-          borderRadius: 2,
-          textAlign: 'center',
-          color: 'white',
+          backgroundColor: '#4caf50',
+          '&:hover': { backgroundColor: '#45a049' },
+          transition: '0.3s',
+          fontWeight: 'bold',
+          letterSpacing: 1,
         }}
       >
-        <Typography
-          variant="h5"
-          mb={3}
-          fontFamily="monospace"
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          gap={1}
-        >
-          <LockIcon sx={{ fontSize: 24 }} />
-          Hannah productos
-        </Typography>
-        <TextField
-          type="password"
-          placeholder="Clave secreta"
-          variant="filled"
-          fullWidth
-          value={password}
-          onChange={(e) => {
-            setPassword(e.target.value)
-            setError('')
-          }}
-          InputProps={{
-            sx: { bgcolor: '#2a2a2a', color: 'white' },
-          }}
-        />
-        {error && (
-          <Typography color="error" mt={1}>
-            {error}
-          </Typography>
-        )}
-        <Button
-          variant="contained"
-          color="success"
-          fullWidth
-          sx={{ mt: 3 }}
-          onClick={handleSubmit}
-        >
-          Entrar
-        </Button>
-      </Box>
-    </>
+        Entrar
+      </Button>
+    </Paper>
   )
 }

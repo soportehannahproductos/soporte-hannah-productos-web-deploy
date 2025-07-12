@@ -5,7 +5,6 @@ import {
   Typography,
   CardActionArea,
   CardMedia,
-  Box,
   useMediaQuery,
   useTheme,
 } from '@mui/material'
@@ -18,16 +17,21 @@ export default function ProductCard({ product, onClick }) {
     <Card
       sx={{
         width: '100%',
-        maxWidth: isMobile ? '100%' : 180,          // ✅ 180px en web
-        height: isMobile ? 140 : 360,               // ✅ 360px en web
+        maxWidth: isMobile ? '100%' : 200,
+        height: isMobile ? 140 : 360,
         display: 'flex',
-        flexDirection: isMobile ? 'row' : 'column', // ↔ row en mobile, ↕ column en web
-        borderRadius: 2,
+        flexDirection: isMobile ? 'row' : 'column',
+        borderRadius: 3,
         overflow: 'hidden',
-        boxShadow: 3,
-        backgroundColor: '#1e1e1e',
-        color: '#f0f0f0',
-        margin: '0 auto',
+        boxShadow: '0 4px 12px #e87afc',
+        background: 'rgba(255, 255, 255, 0.06)',
+        backdropFilter: 'blur(4px)',
+        color: '#fff',
+        transition: 'transform 0.2s',
+        '&:hover': {
+          transform: 'scale(1.03)',
+          boxShadow: '0 6px 16px rgba(0, 0, 0, 0.35)',
+        },
       }}
     >
       <CardActionArea
@@ -53,6 +57,7 @@ export default function ProductCard({ product, onClick }) {
             objectFit: 'cover',
           }}
         />
+
         <CardContent
           sx={{
             flexGrow: 1,
@@ -67,7 +72,11 @@ export default function ProductCard({ product, onClick }) {
             variant="h6"
             noWrap={!isMobile}
             gutterBottom
-            sx={{ fontSize: isMobile ? '1rem' : '1.1rem' }}
+            sx={{
+              fontSize: isMobile ? '1rem' : '1.1rem',
+              fontWeight: 600,
+              color: '#242424',
+            }}
           >
             {product.title}
           </Typography>
@@ -75,7 +84,7 @@ export default function ProductCard({ product, onClick }) {
           <Typography
             variant="body2"
             sx={{
-              color: '#cccccc',
+              color: '#242424',
               overflow: 'hidden',
               display: '-webkit-box',
               WebkitLineClamp: 2,
@@ -89,7 +98,7 @@ export default function ProductCard({ product, onClick }) {
 
           <Typography
             variant="subtitle1"
-            sx={{ color: '#00c853', fontWeight: 'bold' }}
+            sx={{ color: '#242424', fontWeight: 'bold' }}
           >
             ${product.price.toLocaleString('es-AR')}
           </Typography>

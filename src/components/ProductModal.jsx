@@ -21,7 +21,14 @@ import CategoryIcon from '@mui/icons-material/Category'
 import StarIcon from '@mui/icons-material/Star'
 import { useNavigate } from 'react-router-dom'
 
-export default function ProductModal({ open, onClose, product, onAdd, isConfirmationModal = false, fromCart = false, }) {
+export default function ProductModal({
+  open,
+  onClose,
+  product,
+  onAdd,
+  isConfirmationModal = false,
+  fromCart = false,
+}) {
   const theme = useTheme()
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'))
   const navigate = useNavigate()
@@ -36,8 +43,8 @@ export default function ProductModal({ open, onClose, product, onAdd, isConfirma
         fullScreen={fullScreen}
         PaperProps={{
           style: {
-            backgroundColor: '#1e1e1e',
-            color: '#fff',
+            background: 'linear-gradient(to right, #b3d4fc, #e8b3fc)',
+            color: '#222',
             borderRadius: fullScreen ? 0 : 16,
             padding: fullScreen ? '16px' : '20px',
             textAlign: 'center',
@@ -48,7 +55,7 @@ export default function ProductModal({ open, onClose, product, onAdd, isConfirma
           sx={{
             fontSize: { xs: '1.3rem', sm: '1.6rem' },
             fontWeight: 'bold',
-            color: '#00e676',
+            color: '#00c853',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
@@ -134,8 +141,8 @@ export default function ProductModal({ open, onClose, product, onAdd, isConfirma
       maxWidth="sm"
       PaperProps={{
         style: {
-          backgroundColor: '#1e1e1e',
-          color: '#f0f0f0',
+          background: 'linear-gradient(to right, #b3d4fc, #e8b3fc)',
+          color: '#222',
           borderRadius: fullScreen ? 0 : 16,
           padding: fullScreen ? '16px 12px' : '24px',
         },
@@ -149,7 +156,7 @@ export default function ProductModal({ open, onClose, product, onAdd, isConfirma
           fontWeight: 'bold',
           fontSize: { xs: '1.2rem', sm: '1.5rem' },
           gap: 1,
-          color: '#00e676',
+          color: '#e87afc',
         }}
       >
         <InfoIcon />
@@ -179,43 +186,43 @@ export default function ProductModal({ open, onClose, product, onAdd, isConfirma
 
           <Grid item xs={12} sm={7}>
             <Box display="flex" alignItems="center" mb={1}>
-              <DescriptionIcon sx={{ color: '#00e676', mr: 1 }} />
+              <DescriptionIcon sx={{ color: '#e87afc', mr: 1 }} />
               <Typography variant="subtitle1" fontWeight="bold">
                 Descripción:
               </Typography>
             </Box>
-            <Typography variant="body2" mb={2} sx={{ color: '#ccc', whiteSpace: 'pre-line' }}>
+            <Typography variant="body2" mb={2} sx={{ color: '#333', whiteSpace: 'pre-line' }}>
               {product.description || 'Sin descripción disponible.'}
             </Typography>
 
             <Box display="flex" alignItems="center" mb={1}>
-              <AttachMoneyIcon sx={{ color: '#00e676', mr: 1 }} />
-              <Typography variant="subtitle1" fontWeight="bold" sx={{ color: '#00e676' }}>
+              <AttachMoneyIcon sx={{ color: '#e87afc', mr: 1 }} />
+              <Typography variant="subtitle1" fontWeight="bold" sx={{ color: 'black' }}>
                 Precio:
               </Typography>
             </Box>
-            <Typography variant="h5" fontWeight="bold" mb={2} sx={{ color: '#00e676' }}>
+            <Typography variant="h5" fontWeight="bold" mb={2} sx={{ color: 'black' }}>
               ${product.price.toLocaleString('es-AR')}
             </Typography>
 
             {product.category && (
               <Box display="flex" alignItems="center" mb={1}>
-                <CategoryIcon sx={{ color: '#00e676', mr: 1 }} />
+                <CategoryIcon sx={{ color: '#e87afc', mr: 1 }} />
                 <Typography variant="subtitle1" fontWeight="bold">
                   Categoría:
                 </Typography>
-                <Typography variant="body2" ml={1} sx={{ color: '#ccc' }}>
+                <Typography variant="body2" ml={1} sx={{ color: '#333' }}>
                   {product.category}
                 </Typography>
               </Box>
             )}
             {product.rating && (
               <Box display="flex" alignItems="center" mb={1}>
-                <StarIcon sx={{ color: '#00e676', mr: 1 }} />
+                <StarIcon sx={{ color: 'black', mr: 1 }} />
                 <Typography variant="subtitle1" fontWeight="bold">
                   Valoración:
                 </Typography>
-                <Typography variant="body2" ml={1} sx={{ color: '#ccc' }}>
+                <Typography variant="body2" ml={1} sx={{ color: '#333' }}>
                   {product.rating} / 5
                 </Typography>
               </Box>
@@ -224,7 +231,7 @@ export default function ProductModal({ open, onClose, product, onAdd, isConfirma
         </Grid>
       </DialogContent>
 
-      <Divider sx={{ bgcolor: '#333' }} />
+      <Divider sx={{ bgcolor: '#aaa' }} />
 
       <DialogActions
         sx={{
@@ -234,7 +241,7 @@ export default function ProductModal({ open, onClose, product, onAdd, isConfirma
           padding: fullScreen ? 1.5 : 2,
         }}
       >
-       {!fromCart && (
+        {!fromCart && (
           <Button
             onClick={() => {
               onAdd(product)
@@ -243,8 +250,8 @@ export default function ProductModal({ open, onClose, product, onAdd, isConfirma
             variant="outlined"
             startIcon={<AddShoppingCartIcon />}
             sx={{
-              borderColor: '#00e676',
-              color: '#00e676',
+              borderColor: '#00c853',
+              color: '#00c853',
               width: fullScreen ? '100%' : 'auto',
               fontWeight: 'bold',
               '&:hover': {
@@ -261,11 +268,11 @@ export default function ProductModal({ open, onClose, product, onAdd, isConfirma
           onClick={onClose}
           startIcon={<CloseIcon />}
           sx={{
-            color: '#f0f0f0',
-            width: fullScreen ? '100%' : 'auto',
+            color: '#222',
             fontWeight: 'bold',
+            width: fullScreen ? '100%' : 'auto',
             '&:hover': {
-              backgroundColor: '#333',
+              backgroundColor: '#ddd',
             },
           }}
         >
