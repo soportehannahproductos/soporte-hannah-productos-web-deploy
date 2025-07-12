@@ -97,14 +97,17 @@ export default function Catalog() {
           </Box>
         ))}
       </Box>
+  
+     <Grid container spacing={3} justifyContent="center">
+  {filteredProducts.map((product) => (
+    <Grid item xs={6} sm={4} md={3} key={product.id}>
+      <Box display="flex" justifyContent="center">
+        <ProductCard product={product} onClick={setSelectedProduct} />
+      </Box>
+    </Grid>
+  ))}
+</Grid>
 
-      <Grid container spacing={3} justifyContent="center">
-        {filteredProducts.map((product) => (
-          <Grid item xs={6} sm={6} md={3} lg={3} key={product.id}>
-            <ProductCard product={product} onClick={setSelectedProduct} neonBorder />
-          </Grid>
-        ))}
-      </Grid>
 
       {/* Modal principal de producto */}
       <ProductModal
