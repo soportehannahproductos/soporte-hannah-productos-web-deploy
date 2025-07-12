@@ -116,7 +116,7 @@ export default function Catalog() {
               mt: 0.5,
               fontWeight: selectedCategory === label ? 600 : 400,
               transition: 'all 0.3s ease',
-              fontWeight: 300,
+         
             }}
           >
             {label}
