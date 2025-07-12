@@ -84,7 +84,7 @@ export default function Login({ setAuthorized }) {
 
           <Stack spacing={1} fontFamily="monospace">
             <Typography><PaymentIcon sx={{ mr: 1, verticalAlign: 'middle' }} /> Adelanto: $10.000</Typography>
-            <Typography><InventoryIcon sx={{ mr: 1, verticalAlign: 'middle' }} /> Plan básico: $52.000</Typography>
+            <Typography><InventoryIcon sx={{ mr: 1, verticalAlign: 'middle' }} /> Plan básico: $45.000</Typography>
             <Typography><RocketLaunchIcon sx={{ mr: 1, verticalAlign: 'middle' }} /> Plan avanzado: $80.000</Typography>
           </Stack>
 
