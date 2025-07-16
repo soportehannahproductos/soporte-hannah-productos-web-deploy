@@ -99,7 +99,7 @@ export default function ProductModal({
             onClick={onClose}
             variant="contained"
             sx={{
-              backgroundColor: '#00e676',
+              backgroundColor: '#e87afc',
               color: '#000',
               width: '100%',
               fontWeight: 'bold',
@@ -116,12 +116,13 @@ export default function ProductModal({
             }}
             sx={{
               borderColor: '#00e676',
-              color: '#00e676',
+              color: 'black',
               width: '100%',
               fontWeight: 'bold',
               '&:hover': {
                 backgroundColor: '#003d1f',
                 borderColor: '#00ff90',
+                color: 'white',
               },
             }}
           >

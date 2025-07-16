@@ -52,6 +52,13 @@ export default function Catalog() {
   const [loading, setLoading] = useState(true)
   const { addToCart } = useCart()
   const isMobile = useMediaQuery('(max-width:600px)')
+const [modalOpen, setModalOpen] = useState(false)
+  const [productoSeleccionado, setProductoSeleccionado] = useState(null)
+
+  const handleProductoClick = (producto) => {
+    setProductoSeleccionado(producto)
+    setModalOpen(true)
+  }
 
   useEffect(() => {
     const timer = setTimeout(() => setLoading(false), 2000)
@@ -262,6 +269,7 @@ export default function Catalog() {
           setSelectedProduct(null)
         }}
       />
+      
 
       <ProductModal
         open={showConfirmModal}

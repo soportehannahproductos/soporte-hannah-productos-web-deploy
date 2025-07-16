@@ -5,7 +5,6 @@ import {
   Button,
   List,
   ListItem,
-  ListItemText,
   Divider,
   Avatar,
   ListItemAvatar,
@@ -22,23 +21,17 @@ import AccountBalanceIcon from '@mui/icons-material/AccountBalance'
 import PaymentIcon from '@mui/icons-material/Payment'
 
 export default function Cart() {
-  const { cart, clearCart, addToCart, removeFromCart } = useCart()
+  const {
+    cart,
+    clearCart,
+    addToCart,
+    removeFromCart,
+    updateQuantity,
+  } = useCart()
   const [selectedProduct, setSelectedProduct] = useState(null)
   const [modalOpen, setModalOpen] = useState(false)
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false)
   const [productToDelete, setProductToDelete] = useState(null)
-
-  const total = cart.reduce((sum, p) => sum + p.price, 0)
-
-  const whatsappNumber = '5491132752125'
-  const message = encodeURIComponent(
-    `👋 ¡Hola! Me interesa comprar los siguientes productos:\n\n` +
-      cart.map((p, i) => `📦 ${i + 1}. *${p.title}* - $${p.price.toFixed(2)}`).join('\n') +
-      `\n\n💰 *Total:* $${total.toFixed(2)}\n\n` +
-      `💳 *Métodos de pago:*\n🏦 Transferencia Bancaria\n🟦 Mercado Pago\n\n` +
-      `✅ ¿Están disponibles?`
-  )
-  const whatsappLink = `https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${message}`
 
   const handleOpenModal = (product) => {
     setSelectedProduct(product)
@@ -48,10 +41,6 @@ export default function Cart() {
   const handleCloseModal = () => {
     setModalOpen(false)
     setSelectedProduct(null)
-  }
-
-  const handleAddToCart = (product) => {
-    addToCart(product)
   }
 
   const handleRequestDelete = (product) => {
@@ -69,6 +58,35 @@ export default function Cart() {
     setConfirmDeleteOpen(false)
     setProductToDelete(null)
   }
+
+  const handleUpdateQuantity = (productId, newQuantity) => {
+    if (newQuantity < 1) return
+    updateQuantity(productId, newQuantity)
+  }
+
+  const total = cart.reduce(
+    (sum, p) => sum + p.price * (p.quantity || 1),
+    0
+  )
+
+  const whatsappNumber = '5491132752125'
+  const message = encodeURIComponent(
+    `👋 ¡Hola! Me interesa comprar los siguientes productos:\n\n` +
+      cart
+        .map((p, i) => {
+          const qty = p.quantity || 1
+          const subtotal = p.price * qty
+          return `📦 ${i + 1}. *${p.title}*\nCantidad: ${qty}\nPrecio unitario: $${p.price.toFixed(
+            2
+          )}\nSubtotal: $${subtotal.toFixed(2)}`
+        })
+        .join('\n\n') +
+      `\n\n💰 *Total:* $${total.toFixed(2)}\n\n` +
+      `💳 *Métodos de pago:*\n🏦 Transferencia Bancaria\n🟦 Mercado Pago\n\n` +
+      `✅ ¿Están disponibles?`
+  )
+
+  const whatsappLink = `https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${message}`
 
   return (
     <Box
@@ -139,9 +157,11 @@ export default function Cart() {
       ) : (
         <>
           <List>
-            {cart.map((product, index) => (
-              <React.Fragment key={index}>
+            {cart.map((product, index) => {
+              const quantity = product.quantity || 1
+              return (
                 <ListItem
+                  key={index}
                   sx={{
                     bgcolor: '#fff',
                     borderRadius: 2,
@@ -149,37 +169,72 @@ export default function Cart() {
                     px: 2,
                     py: 1,
                     boxShadow: 2,
-                    '&:hover': { backgroundColor: '#f1f1f1' },
+                    flexDirection: { xs: 'column', sm: 'row' },
+                    alignItems: { xs: 'flex-start', sm: 'center' },
+                    gap: 2,
                   }}
                 >
-                  <Box
-                    onClick={() => handleOpenModal(product)}
-                    sx={{ display: 'flex', alignItems: 'center', flexGrow: 1, cursor: 'pointer' }}
-                  >
-                    <ListItemAvatar>
-                      <Avatar
-                        variant="rounded"
-                        src={product.image}
-                        alt={product.title}
-                        sx={{ width: 60, height: 60, mr: 2 }}
-                        onError={(e) =>
-                          (e.currentTarget.src =
-                            'https://http2.mlstatic.com/D_NQ_NP_2X_957198-MLA49876337542_052022-F.webp')
-                        }
-                      />
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary={
-                        <Typography variant="subtitle1" fontWeight="bold" color="text.primary">
-                          {product.title}
-                        </Typography>
-                      }
-                      secondary={
-                        <Typography variant="body2" color="text.secondary">
-                          Precio: ${product.price.toFixed(2)}
-                        </Typography>
+                  <ListItemAvatar>
+                    <Avatar
+                      variant="rounded"
+                      src={product.image}
+                      alt={product.title}
+                      sx={{ width: 60, height: 60 }}
+                      onError={(e) =>
+                        (e.currentTarget.src =
+                          'https://http2.mlstatic.com/D_NQ_NP_2X_957198-MLA49876337542_052022-F.webp')
                       }
                     />
+                  </ListItemAvatar>
+
+                  <Box
+                    onClick={() => handleOpenModal(product)}
+                    sx={{ flexGrow: 1, cursor: 'pointer', minWidth: 0 }}
+                  >
+                    <Typography
+                      variant="subtitle1"
+                      fontWeight="bold"
+                      color="text.primary"
+                      noWrap
+                    >
+                      {product.title}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Precio: ${product.price.toFixed(2)} x {quantity}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Subtotal: ${(product.price * quantity).toFixed(2)}
+                    </Typography>
+                  </Box>
+
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 1,
+                      mt: { xs: 1, sm: 0 },
+                    }}
+                  >
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      onClick={() =>
+                        handleUpdateQuantity(product.id, quantity - 1)
+                      }
+                      disabled={quantity <= 1}
+                    >
+                      -
+                    </Button>
+                    <Typography variant="body2">{quantity}</Typography>
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      onClick={() =>
+                        handleUpdateQuantity(product.id, quantity + 1)
+                      }
+                    >
+                      +
+                    </Button>
                   </Box>
 
                   <IconButton
@@ -192,8 +247,8 @@ export default function Cart() {
                     <DeleteIcon />
                   </IconButton>
                 </ListItem>
-              </React.Fragment>
-            ))}
+              )
+            })}
           </List>
 
           <Divider sx={{ my: 3 }} />
@@ -223,17 +278,15 @@ export default function Cart() {
         </>
       )}
 
-      {/* Modal de producto */}
       <ProductModal
         open={modalOpen}
         onClose={handleCloseModal}
         product={selectedProduct}
-        onAdd={handleAddToCart}
+        onAdd={addToCart}
         onRemove={removeFromCart}
         fromCart
       />
 
-      {/* Modal de confirmación para eliminar */}
       <Dialog open={confirmDeleteOpen} onClose={handleCancelDelete}>
         <DialogTitle>¿Eliminar producto del carrito?</DialogTitle>
         <DialogContent>
