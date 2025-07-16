@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import {
   Grid,
   Box,
@@ -20,8 +20,8 @@ import ProductCard from '../components/ProductCard'
 import ProductModal from '../components/ProductModal'
 import { products } from '../data/products'
 import { useCart } from '../context/CartContext'
+import logo from '../assets/logo2.png'
 
-// CATEGORÍAS
 const categories = [
   { label: 'Todas', icon: <AllInclusiveIcon /> },
   { label: 'Indumentaria', icon: <CheckroomIcon /> },
@@ -31,7 +31,6 @@ const categories = [
   { label: 'Cargadores', icon: <PowerIcon /> },
 ]
 
-// BOTÓN DE CATEGORÍA PERSONALIZADO
 const StyledIconButton = styled(IconButton)(({ active }) => ({
   backgroundColor: active ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.05)',
   borderRadius: '50%',
@@ -50,8 +49,14 @@ export default function Catalog() {
   const [selectedCategory, setSelectedCategory] = useState('Todas')
   const [showConfirmModal, setShowConfirmModal] = useState(false)
   const [visibleCount, setVisibleCount] = useState(8)
+  const [loading, setLoading] = useState(true)
   const { addToCart } = useCart()
   const isMobile = useMediaQuery('(max-width:600px)')
+
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 2000)
+    return () => clearTimeout(timer)
+  }, [])
 
   const handleAddToCart = (product) => {
     addToCart(product)
@@ -66,6 +71,52 @@ export default function Catalog() {
 
   const visibleProducts = filteredProducts.slice(0, visibleCount)
 
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          minHeight: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: 'linear-gradient(to right, #b3d4fc, #e8b3fc)',
+          textAlign: 'center',
+          p: 4,
+        }}
+      >
+        <Box
+          component="img"
+          src={logo}
+          alt="Logo"
+          sx={{ width: 120, height: 'auto', mb: 4 }}
+        />
+        <Typography
+          variant="h6"
+          sx={{ mb: 2, fontWeight: 600, color: '#6c3cb4', letterSpacing: 1 }}
+        >
+          Cargando productos...
+        </Typography>
+        <Box
+          sx={{
+            width: 40,
+            height: 40,
+            border: '4px solid #ccc',
+            borderTop: '4px solid #6c3cb4',
+            borderRadius: '50%',
+            animation: 'spin 1s linear infinite',
+          }}
+        />
+        <style>
+          {`@keyframes spin {
+              0% { transform: rotate(0deg); }
+              100% { transform: rotate(360deg); }
+          }`}
+        </style>
+      </Box>
+    )
+  }
+
   return (
     <Box
       sx={{
@@ -75,45 +126,44 @@ export default function Catalog() {
         px: 2,
       }}
     >
-     {/* AVISO DE COMPRA MÍNIMA */}
-<Box
-  sx={{
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 2,
-    background: 'linear-gradient(to right, #ffe0e0, #fff1f1)',
-    borderLeft: '6px solid #d32f2f',
-    borderRadius: 3,
-    px: 3,
-    py: 2,
-    maxWidth: 500,
-    margin: '0 auto 32px',
-    boxShadow: '0 6px 18px rgba(0, 0, 0, 0.1)',
-  }}
->
-  <img
-    src="https://cdn-icons-png.flaticon.com/512/1828/1828843.png"
-    alt="Alerta"
-    style={{
-      width: isMobile ? 24 : 32,
-      height: isMobile ? 24 : 32,
-      filter: 'drop-shadow(0 0 3px rgba(255, 0, 0, 0.3))',
-    }}
-  />
-  <Typography
-    variant="subtitle1"
-    sx={{
-      fontWeight: 600,
-      fontSize: isMobile ? '0.95rem' : '1.1rem',
-      color: '#b71c1c',
-      letterSpacing: '0.8px',
-    }}
-  >
-    El pedido mínimo para realizar una compra es de <strong>$100.000</strong>
-  </Typography>
-</Box>
-
+      {/* AVISO DE COMPRA MÍNIMA */}
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 2,
+          background: 'linear-gradient(to right, #ffe0e0, #fff1f1)',
+          borderLeft: '6px solid #d32f2f',
+          borderRadius: 3,
+          px: 3,
+          py: 2,
+          maxWidth: 500,
+          margin: '0 auto 32px',
+          boxShadow: '0 6px 18px rgba(0, 0, 0, 0.1)',
+        }}
+      >
+        <img
+          src="https://cdn-icons-png.flaticon.com/512/1828/1828843.png"
+          alt="Alerta"
+          style={{
+            width: isMobile ? 24 : 32,
+            height: isMobile ? 24 : 32,
+            filter: 'drop-shadow(0 0 3px rgba(255, 0, 0, 0.3))',
+          }}
+        />
+        <Typography
+          variant="subtitle1"
+          sx={{
+            fontWeight: 600,
+            fontSize: isMobile ? '0.95rem' : '1.1rem',
+            color: '#b71c1c',
+            letterSpacing: '0.8px',
+          }}
+        >
+          El pedido mínimo para realizar una compra es de <strong>$100.000</strong>
+        </Typography>
+      </Box>
 
       {/* CATEGORÍAS */}
       <Box
@@ -130,7 +180,7 @@ export default function Catalog() {
             key={label}
             onClick={() => {
               setSelectedCategory(label)
-              setVisibleCount(8) // Reiniciar al cambiar categoría
+              setVisibleCount(8)
             }}
             sx={{
               display: 'flex',
@@ -202,7 +252,7 @@ export default function Catalog() {
         </Box>
       )}
 
-      {/* MODAL PRODUCTO */}
+      {/* MODALES */}
       <ProductModal
         open={Boolean(selectedProduct)}
         onClose={() => setSelectedProduct(null)}
@@ -213,7 +263,6 @@ export default function Catalog() {
         }}
       />
 
-      {/* MODAL CONFIRMACIÓN */}
       <ProductModal
         open={showConfirmModal}
         onClose={() => setShowConfirmModal(false)}
