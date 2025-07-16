@@ -37,7 +37,7 @@ export default function Login({ setAuthorized }) {
           sx={{
             width: 70,
             height: 70,
-            bgcolor: 'white',
+            bgcolor: '0 0 8px rgba(0,0,0,0.4)',
             borderRadius: '50%',
             display: 'flex',
             justifyContent: 'center',
@@ -50,8 +50,8 @@ export default function Login({ setAuthorized }) {
             src={logo}
             alt="Hannah Logo"
             sx={{
-              width: 40,
-              height: 40,
+              width: 100,
+              height: 100,
               objectFit: 'contain',
             }}
           />
@@ -60,7 +60,7 @@ export default function Login({ setAuthorized }) {
           <Typography
             variant="h4"
             sx={{
-              fontFamily: '"Great Vibes", cursive',
+              fontFamily: 'Montserrat, sans-serif',
               color: 'white',
               textShadow: '1px 1px 3px rgba(0,0,0,0.4)',
             }}
@@ -73,6 +73,7 @@ export default function Login({ setAuthorized }) {
               color: 'white',
               letterSpacing: '6px',
               fontWeight: 300,
+                   fontFamily: 'Montserrat, sans-serif',
             }}
           >
             PRODUCTS

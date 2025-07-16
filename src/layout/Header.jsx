@@ -50,33 +50,40 @@ export default function Header() {
             src={logo}
             alt="Hannah Logo"
             sx={{
-              width: { xs: 50, md: 70 },
+              width: { xs: 60, md: 80 },
               height: { xs: 50, md: 70 },
               objectFit: 'cover',
               borderRadius: '8px',
             }}
           />
           <Box sx={{ ml: 2, display: 'flex', flexDirection: 'column' }}>
-            <Typography
-              variant="h5"
-              sx={{
-                fontFamily: '"Great Vibes", cursive',
-                color: '#222',
-                textShadow: '1px 1px 2px rgba(0,0,0,0.2)',
-              }}
-            >
-              Hannah
-            </Typography>
-            <Typography
-              variant="caption"
-              sx={{
-                color: '#444',
-                letterSpacing: '6px',
-                fontWeight: 300,
-              }}
-            >
-              PRODUCTS
-            </Typography>
+       <Typography
+          variant="h5"
+          sx={{
+            fontFamily: 'Montserrat, sans-serif',
+            fontWeight: 600,
+            fontSize: { xs: '1.2rem', md: '1.6rem' },
+            color: '#222',
+            textShadow: '1px 1px 2px rgba(0,0,0,0.1)',
+            letterSpacing: '0.5px',
+          }}
+        >
+          Hannah
+        </Typography>
+
+        <Typography
+          variant="caption"
+          sx={{
+            fontFamily: 'Montserrat, sans-serif',
+            fontWeight: 500,
+            fontSize: '0.75rem',
+            color: '#555',
+            letterSpacing: '6px',
+          }}
+        >
+          PRODUCTS
+        </Typography>
+
           </Box>
         </Box>
 

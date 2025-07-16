@@ -1,0 +1,235 @@
+
+
+
+import React, { useState, useEffect } from 'react'
+import {
+  Grid,
+  Box,
+  Typography,
+  IconButton,
+  CircularProgress,
+  Button,
+} from '@mui/material'
+import CheckroomIcon from '@mui/icons-material/Checkroom'
+import BuildIcon from '@mui/icons-material/Build'
+import HeadphonesIcon from '@mui/icons-material/Headphones'
+import LightbulbIcon from '@mui/icons-material/Lightbulb'
+import PowerIcon from '@mui/icons-material/Power'
+import AllInclusiveIcon from '@mui/icons-material/AllInclusive'
+import { styled } from '@mui/material/styles'
+import ProductCard from '../components/ProductCard'
+import ProductModal from '../components/ProductModal'
+import Papa from 'papaparse'
+import { useCart } from '../context/CartContext'
+
+// CATEGORÍAS
+const categories = [
+  { label: 'Todas', icon: <AllInclusiveIcon /> },
+  { label: 'Indumentaria', icon: <CheckroomIcon /> },
+  { label: 'Herramientas', icon: <BuildIcon /> },
+  { label: 'Artefactos', icon: <HeadphonesIcon /> },
+  { label: 'Lámparas', icon: <LightbulbIcon /> },
+  { label: 'Cargadores', icon: <PowerIcon /> },
+]
+
+// BOTÓN DE CATEGORÍA PERSONALIZADO
+const StyledIconButton = styled(IconButton)(({ active }) => ({
+  backgroundColor: active ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.1)',
+  borderRadius: '50%',
+  padding: 10,
+  color: active ? '#e87afc' : '#fff',
+  boxShadow: active ? '0 0 12px #e87afc' : 'none',
+  transition: 'all 0.3s ease',
+  '&:hover': {
+    color: '#b3d4fc',
+    boxShadow: '0 0 10px #b3d4fc',
+  },
+}))
+
+export default function Catalog() {
+  const [selectedProduct, setSelectedProduct] = useState(null)
+  const [selectedCategory, setSelectedCategory] = useState('Todas')
+  const [showConfirmModal, setShowConfirmModal] = useState(false)
+  const [products, setProducts] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [visibleCount, setVisibleCount] = useState(8) // Mostramos 8 al inicio
+  const { addToCart } = useCart()
+
+  const fetchProductsFromGoogleSheet = () => {
+    const sheetId = '1bCIQuhai06IJbh398Ze8hRuNUJLBGsjdw8q5BLMfP3k'
+    const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv`
+
+    Papa.parse(url, {
+      download: true,
+      header: true,
+      complete: (result) => {
+        const parsedProducts = result.data
+          .filter((row) => row.title && row.price)
+          .map((row, index) => ({
+            id: index + 1,
+            title: row.title,
+            description: row.description,
+            price: parseFloat(row.price),
+            image: row.image,
+            category: row.category,
+          }))
+        setProducts(parsedProducts)
+        setLoading(false)
+      },
+      error: (err) => {
+        console.error('Error al cargar los datos:', err)
+        setLoading(false)
+      },
+    })
+  }
+
+  useEffect(() => {
+    fetchProductsFromGoogleSheet()
+  }, [])
+
+  const handleAddToCart = (product) => {
+    addToCart(product)
+    setShowConfirmModal(true)
+  }
+
+  const handleCloseConfirm = () => {
+    setShowConfirmModal(false)
+  }
+
+  const filteredProducts =
+    selectedCategory === 'Todas'
+      ? products
+      : products.filter((p) => p.category === selectedCategory)
+
+  const visibleProducts = filteredProducts.slice(0, visibleCount)
+
+  return (
+    <Box
+      sx={{
+        minHeight: '100vh',
+        background: 'linear-gradient(to right, #b3d4fc, #e8b3fc)',
+        py: 6,
+        px: 2,
+      }}
+    >
+      {/* CATEGORÍAS */}
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          gap: 3,
+          mb: 6,
+          flexWrap: 'wrap',
+        }}
+      >
+        {categories.map(({ label, icon }) => (
+          <Box
+            key={label}
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              cursor: 'pointer',
+              userSelect: 'none',
+              minWidth: 70,
+            }}
+            onClick={() => {
+              setSelectedCategory(label)
+              setVisibleCount(8) // Reiniciar vista al cambiar categoría
+            }}
+          >
+            <StyledIconButton size="large" active={selectedCategory === label ? 1 : 0}>
+              {React.cloneElement(icon, {
+                style: {
+                  color: selectedCategory === label ? '#e87afc' : '#000',
+                  transition: 'color 0.3s ease',
+                },
+              })}
+            </StyledIconButton>
+            <Typography
+              variant="caption"
+              noWrap
+              sx={{
+                color: selectedCategory === label ? '#e87afc' : '#000',
+                textShadow: selectedCategory === label
+                  ? '0 0 6px #e87afc'
+                  : '0 0 3px rgba(0,0,0,0.1)',
+                letterSpacing: '2px',
+                mt: 0.5,
+                fontWeight: selectedCategory === label ? 600 : 400,
+                transition: 'all 0.3s ease',
+              }}
+            >
+              {label}
+            </Typography>
+          </Box>
+        ))}
+      </Box>
+
+      {/* LOADING */}
+      {loading ? (
+        <Box display="flex" justifyContent="center" mt={8}>
+          <CircularProgress />
+        </Box>
+      ) : (
+        <>
+          <Grid container spacing={3} justifyContent="center">
+            {visibleProducts.map((product) => (
+              <Grid item xs={6} sm={4} md={3} key={product.id}>
+                <Box display="flex" justifyContent="center">
+                  <ProductCard product={product} onClick={setSelectedProduct} />
+                </Box>
+              </Grid>
+            ))}
+          </Grid>
+
+          {/* BOTÓN VER MÁS */}
+          {visibleCount < filteredProducts.length && (
+            <Box mt={4} display="flex" justifyContent="center">
+              <Button
+                variant="contained"
+                onClick={() => setVisibleCount((prev) => prev + 8)}
+                sx={{
+                  backgroundColor: '#e87afc',
+                  color: 'white',
+                  '&:hover': { backgroundColor: '#d06ae8' },
+                  px: 4,
+                  py: 1,
+                  fontWeight: 'bold',
+                }}
+              >
+                Ver más productos
+              </Button>
+            </Box>
+          )}
+        </>
+      )}
+
+      {/* MODAL PRODUCTO */}
+      <ProductModal
+        open={Boolean(selectedProduct)}
+        onClose={() => setSelectedProduct(null)}
+        product={selectedProduct}
+        onAdd={(product) => {
+          handleAddToCart(product)
+          setSelectedProduct(null)
+        }}
+      />
+
+      {/* MODAL CONFIRMACIÓN */}
+      <ProductModal
+        open={showConfirmModal}
+        onClose={handleCloseConfirm}
+        product={{
+          title: '¡Se agregó correctamente!',
+          description: '',
+          image: 'https://cdn-icons-png.flaticon.com/512/190/190411.png',
+          price: 0,
+        }}
+        onAdd={() => {}}
+        isConfirmationModal={true}
+      />
+    </Box>
+  )
+}
+
