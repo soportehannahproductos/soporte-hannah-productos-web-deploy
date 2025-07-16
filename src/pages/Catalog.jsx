@@ -75,31 +75,45 @@ export default function Catalog() {
         px: 2,
       }}
     >
-      {/* AVISO DE COMPRA MÍNIMA */}
-      <Box
-        sx={{
-          backgroundColor: '#fff',
-          borderRadius: '12px',
-          boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-          py: 1.5,
-          px: 3,
-          maxWidth: 400,
-          margin: '0 auto 24px',
-          textAlign: 'center',
-        }}
-      >
-        <Typography
-          variant="subtitle1"
-          sx={{
-            fontWeight: 700,
-            color: '#d32f2f',
-            letterSpacing: '1px',
-            fontSize: isMobile ? '1rem' : '1.2rem',
-          }}
-        >
-          Compra mínima: $100.000
-        </Typography>
-      </Box>
+     {/* AVISO DE COMPRA MÍNIMA */}
+<Box
+  sx={{
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 2,
+    background: 'linear-gradient(to right, #ffe0e0, #fff1f1)',
+    borderLeft: '6px solid #d32f2f',
+    borderRadius: 3,
+    px: 3,
+    py: 2,
+    maxWidth: 500,
+    margin: '0 auto 32px',
+    boxShadow: '0 6px 18px rgba(0, 0, 0, 0.1)',
+  }}
+>
+  <img
+    src="https://cdn-icons-png.flaticon.com/512/1828/1828843.png"
+    alt="Alerta"
+    style={{
+      width: isMobile ? 24 : 32,
+      height: isMobile ? 24 : 32,
+      filter: 'drop-shadow(0 0 3px rgba(255, 0, 0, 0.3))',
+    }}
+  />
+  <Typography
+    variant="subtitle1"
+    sx={{
+      fontWeight: 600,
+      fontSize: isMobile ? '0.95rem' : '1.1rem',
+      color: '#b71c1c',
+      letterSpacing: '0.8px',
+    }}
+  >
+    El pedido mínimo para realizar una compra es de <strong>$100.000</strong>
+  </Typography>
+</Box>
+
 
       {/* CATEGORÍAS */}
       <Box
