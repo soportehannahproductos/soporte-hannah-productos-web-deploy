@@ -1,12 +1,27 @@
-import { db } from '../config/Firebase'
-import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore'
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '../config/Firebase';
 
-// Obtener todos los productos
-export const fetchProducts = async () => {
-  const querySnapshot = await getDocs(collection(db, 'productos'))
-  return querySnapshot.docs.map(doc => ({
-    id: doc.id,
-    ...doc.data(),
-  }))
-}
+export const ecApi = createApi({
+  reducerPath: 'ecApi',
+  baseQuery: fetchBaseQuery({ baseUrl: '/' }), // no se usa, pero requerido
+  endpoints: (builder) => ({
+    getProductos: builder.query({
+      async queryFn() {
+        try {
+          const querySnapshot = await getDocs(collection(db, 'productos'));
+          const productos = [];
+          querySnapshot.forEach(doc => {
+            productos.push({ id: doc.id, ...doc.data() });
+          });
+          return { data: productos };
+        } catch (error) {
+          return { error: error.message };
+        }
+      },
+    }),
+  }),
+});
 
+// Hooks generados automáticamente
+export const { useGetProductosQuery } = ecApi;

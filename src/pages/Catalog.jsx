@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useMemo } from 'react'
 import {
   Grid,
   Box,
@@ -19,7 +19,7 @@ import { styled } from '@mui/material/styles'
 
 import ProductCard from '../components/ProductCard'
 import ProductModal from '../components/ProductModal'
-import { fetchProducts } from '../service/ecApi'
+import { useGetProductosQuery } from '../service/ecApi'
 import { useCart } from '../context/CartContext'
 import logo from '../assets/logo2.png'
 
@@ -46,43 +46,28 @@ const StyledIconButton = styled(IconButton)(({ active }) => ({
 }))
 
 export default function Catalog() {
-  const [productos, setProductos] = useState([])
+  const { data: productos = [], error, isLoading } = useGetProductosQuery()
   const [selectedProduct, setSelectedProduct] = useState(null)
   const [selectedCategory, setSelectedCategory] = useState('Todas')
   const [visibleCount, setVisibleCount] = useState(8)
-  const [loading, setLoading] = useState(true)
   const [showConfirmModal, setShowConfirmModal] = useState(false)
   const { addToCart } = useCart()
   const isMobile = useMediaQuery('(max-width:600px)')
 
-  useEffect(() => {
-    const cargarProductos = async () => {
-      try {
-        const productosFirebase = await fetchProducts()
-        setProductos(productosFirebase)
-      } catch (error) {
-        console.error('Error al obtener productos:', error)
-      } finally {
-        setLoading(false)
-      }
-    }
-    cargarProductos()
-  }, [])
-
   const filteredProducts = useMemo(() => {
-    return selectedCategory === 'Todas'
-      ? productos
-      : productos.filter((p) => p.category === selectedCategory)
-  }, [selectedCategory, productos])
+    if (selectedCategory === 'Todas') return productos
+    return productos.filter(p => p.category === selectedCategory)
+  }, [productos, selectedCategory])
 
   const visibleProducts = filteredProducts.slice(0, visibleCount)
 
+  // FUNCIÓN DECLARADA AQUÍ, ANTES DEL RETURN
   const handleAddToCart = (product) => {
     addToCart(product)
     setShowConfirmModal(true)
   }
 
-  if (loading) {
+  if (isLoading) {
     return (
       <Box
         sx={{
@@ -128,6 +113,29 @@ export default function Catalog() {
     )
   }
 
+  if (error) {
+    return (
+      <Box
+        sx={{
+          minHeight: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: 'linear-gradient(to right, #f8d7da, #f5c6cb)',
+          textAlign: 'center',
+          p: 4,
+          color: '#721c24',
+        }}
+      >
+        <Typography variant="h6" sx={{ fontWeight: 600 }}>
+          Error al cargar productos:
+        </Typography>
+        <Typography>{error.toString()}</Typography>
+      </Box>
+    )
+  }
+
   return (
     <Box
       sx={{
@@ -137,7 +145,7 @@ export default function Catalog() {
         px: 2,
       }}
     >
-      {/* AVISO DE COMPRA MÍNIMA */}
+      {/* Aviso compra mínima */}
       <Box
         sx={{
           display: 'flex',
@@ -176,7 +184,7 @@ export default function Catalog() {
         </Typography>
       </Box>
 
-      {/* CATEGORÍAS */}
+      {/* Categorías */}
       <Box
         sx={{
           display: 'flex',
@@ -217,9 +225,10 @@ export default function Catalog() {
                 mt: 0.5,
                 fontWeight: selectedCategory === label ? 600 : 400,
                 color: selectedCategory === label ? '#e87afc' : '#000',
-                textShadow: selectedCategory === label
-                  ? '0 0 6px #e87afc'
-                  : '0 0 3px rgba(0,0,0,0.1)',
+                textShadow:
+                  selectedCategory === label
+                    ? '0 0 6px #e87afc'
+                    : '0 0 3px rgba(0,0,0,0.1)',
                 letterSpacing: '1.5px',
               }}
             >
@@ -229,7 +238,7 @@ export default function Catalog() {
         ))}
       </Box>
 
-      {/* PRODUCTOS */}
+      {/* Productos */}
       <Grid container spacing={3} justifyContent="center">
         {visibleProducts.map((product) => (
           <Grid item xs={6} sm={4} md={3} key={product.id}>
@@ -240,7 +249,7 @@ export default function Catalog() {
         ))}
       </Grid>
 
-      {/* BOTÓN MOSTRAR MÁS */}
+      {/* Botón Mostrar Más */}
       {visibleCount < filteredProducts.length && (
         <Box mt={4} textAlign="center">
           <Button
@@ -263,7 +272,7 @@ export default function Catalog() {
         </Box>
       )}
 
-      {/* MODALES */}
+      {/* Modales */}
       <ProductModal
         open={Boolean(selectedProduct)}
         onClose={() => setSelectedProduct(null)}
