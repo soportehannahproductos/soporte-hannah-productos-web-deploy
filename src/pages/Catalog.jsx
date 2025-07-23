@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import {
   Grid,
   Box,
@@ -16,9 +16,10 @@ import {
   AllInclusive as AllInclusiveIcon,
 } from '@mui/icons-material'
 import { styled } from '@mui/material/styles'
+
 import ProductCard from '../components/ProductCard'
 import ProductModal from '../components/ProductModal'
-import { products } from '../data/products'
+import { fetchProducts } from '../service/ecApi'
 import { useCart } from '../context/CartContext'
 import logo from '../assets/logo2.png'
 
@@ -28,7 +29,7 @@ const categories = [
   { label: 'Herramientas', icon: <BuildIcon /> },
   { label: 'Artefactos', icon: <HeadphonesIcon /> },
   { label: 'Lámparas', icon: <LightbulbIcon /> },
-  { label: 'Cargadores', icon: <PowerIcon /> },
+  { label: 'Electrodomésticos', icon: <PowerIcon /> },
 ]
 
 const StyledIconButton = styled(IconButton)(({ active }) => ({
@@ -45,38 +46,41 @@ const StyledIconButton = styled(IconButton)(({ active }) => ({
 }))
 
 export default function Catalog() {
+  const [productos, setProductos] = useState([])
   const [selectedProduct, setSelectedProduct] = useState(null)
   const [selectedCategory, setSelectedCategory] = useState('Todas')
-  const [showConfirmModal, setShowConfirmModal] = useState(false)
   const [visibleCount, setVisibleCount] = useState(8)
   const [loading, setLoading] = useState(true)
+  const [showConfirmModal, setShowConfirmModal] = useState(false)
   const { addToCart } = useCart()
   const isMobile = useMediaQuery('(max-width:600px)')
-const [modalOpen, setModalOpen] = useState(false)
-  const [productoSeleccionado, setProductoSeleccionado] = useState(null)
-
-  const handleProductoClick = (producto) => {
-    setProductoSeleccionado(producto)
-    setModalOpen(true)
-  }
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 2000)
-    return () => clearTimeout(timer)
+    const cargarProductos = async () => {
+      try {
+        const productosFirebase = await fetchProducts()
+        setProductos(productosFirebase)
+      } catch (error) {
+        console.error('Error al obtener productos:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    cargarProductos()
   }, [])
+
+  const filteredProducts = useMemo(() => {
+    return selectedCategory === 'Todas'
+      ? productos
+      : productos.filter((p) => p.category === selectedCategory)
+  }, [selectedCategory, productos])
+
+  const visibleProducts = filteredProducts.slice(0, visibleCount)
 
   const handleAddToCart = (product) => {
     addToCart(product)
     setShowConfirmModal(true)
   }
-
-  const filteredProducts = useMemo(() => {
-    return selectedCategory === 'Todas'
-      ? products
-      : products.filter((p) => p.category === selectedCategory)
-  }, [selectedCategory])
-
-  const visibleProducts = filteredProducts.slice(0, visibleCount)
 
   if (loading) {
     return (
@@ -116,8 +120,8 @@ const [modalOpen, setModalOpen] = useState(false)
         />
         <style>
           {`@keyframes spin {
-              0% { transform: rotate(0deg); }
-              100% { transform: rotate(360deg); }
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
           }`}
         </style>
       </Box>
@@ -269,7 +273,6 @@ const [modalOpen, setModalOpen] = useState(false)
           setSelectedProduct(null)
         }}
       />
-      
 
       <ProductModal
         open={showConfirmModal}
