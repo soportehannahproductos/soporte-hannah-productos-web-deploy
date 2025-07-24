@@ -69,7 +69,7 @@ export default function Cart() {
     0
   )
 
-  const whatsappNumber = '5491132752125'
+  const whatsappNumber = '5491127758316'
   const message = encodeURIComponent(
     `👋 ¡Hola! Me interesa comprar los siguientes productos:\n\n` +
       cart
