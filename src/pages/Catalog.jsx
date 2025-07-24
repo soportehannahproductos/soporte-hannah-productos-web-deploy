@@ -1,9 +1,9 @@
-import React, { useState, useMemo } from 'react'
+
+import React, { useState, useMemo, useEffect } from 'react'
 import {
   Grid,
   Box,
   Typography,
-  IconButton,
   useMediaQuery,
   Button,
 } from '@mui/material'
@@ -15,35 +15,15 @@ import {
   Power as PowerIcon,
   AllInclusive as AllInclusiveIcon,
 } from '@mui/icons-material'
-import { styled } from '@mui/material/styles'
 
+import Categoria from '../components/Categoria' 
 import ProductCard from '../components/ProductCard'
 import ProductModal from '../components/ProductModal'
 import { useGetProductosQuery } from '../service/ecApi'
 import { useCart } from '../context/CartContext'
 import logo from '../assets/logo2.png'
 
-const categories = [
-  { label: 'Todas', icon: <AllInclusiveIcon /> },
-  { label: 'Indumentaria', icon: <CheckroomIcon /> },
-  { label: 'Herramientas', icon: <BuildIcon /> },
-  { label: 'Artefactos', icon: <HeadphonesIcon /> },
-  { label: 'Lámparas', icon: <LightbulbIcon /> },
-  { label: 'Electrodomésticos', icon: <PowerIcon /> },
-]
 
-const StyledIconButton = styled(IconButton)(({ active }) => ({
-  backgroundColor: active ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.05)',
-  borderRadius: '50%',
-  padding: 10,
-  color: active ? '#e87afc' : '#000',
-  boxShadow: active ? '0 0 10px #e87afc' : 'none',
-  transition: 'all 0.3s ease',
-  '&:hover': {
-    color: '#b3d4fc',
-    boxShadow: '0 0 10px #b3d4fc',
-  },
-}))
 
 export default function Catalog() {
   const { data: productos = [], error, isLoading } = useGetProductosQuery()
@@ -53,7 +33,24 @@ export default function Catalog() {
   const [showConfirmModal, setShowConfirmModal] = useState(false)
   const { addToCart } = useCart()
   const isMobile = useMediaQuery('(max-width:600px)')
+  const iconMap = {
+  Muebles: <CheckroomIcon />,
+  Artefactos: <HeadphonesIcon />,
+  Electrodomésticos: <PowerIcon />,
+  reloj: <LightbulbIcon />,
+  Hogar: <BuildIcon />,
+}
 
+const categories = useMemo(() => {
+  const unique = [...new Set(productos.map(p => p.category).filter(Boolean))]
+  return [
+    { label: 'Todas', icon: <AllInclusiveIcon /> },
+    ...unique.map(label => ({
+      label,
+      icon: iconMap[label] || <AllInclusiveIcon />,
+    })),
+  ]
+}, [productos])
   const filteredProducts = useMemo(() => {
     if (selectedCategory === 'Todas') return productos
     return productos.filter(p => p.category === selectedCategory)
@@ -61,12 +58,18 @@ export default function Catalog() {
 
   const visibleProducts = filteredProducts.slice(0, visibleCount)
 
-  // FUNCIÓN DECLARADA AQUÍ, ANTES DEL RETURN
   const handleAddToCart = (product) => {
     addToCart(product)
     setShowConfirmModal(true)
   }
-
+useEffect(() => {
+  if (productos.length > 0) {
+    const categoriasUnicas = [
+      ...new Set(productos.map((p) => p.category).filter(Boolean)),
+    ]
+    console.log('Categorías encontradas:', categoriasUnicas)
+  }
+}, [productos])
   if (isLoading) {
     return (
       <Box
@@ -185,58 +188,14 @@ export default function Catalog() {
       </Box>
 
       {/* Categorías */}
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          flexWrap: 'wrap',
-          gap: 3,
-          mb: 6,
+      <Categoria
+        categories={categories}
+        selectedCategory={selectedCategory}
+        onSelectCategory={(label) => {
+          setSelectedCategory(label)
+          setVisibleCount(8)
         }}
-      >
-        {categories.map(({ label, icon }) => (
-          <Box
-            key={label}
-            onClick={() => {
-              setSelectedCategory(label)
-              setVisibleCount(8)
-            }}
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              cursor: 'pointer',
-              userSelect: 'none',
-              minWidth: 70,
-            }}
-          >
-            <StyledIconButton active={selectedCategory === label ? 1 : 0}>
-              {React.cloneElement(icon, {
-                style: {
-                  color: selectedCategory === label ? '#e87afc' : '#000',
-                  transition: 'color 0.3s ease',
-                },
-              })}
-            </StyledIconButton>
-            <Typography
-              variant="caption"
-              noWrap
-              sx={{
-                mt: 0.5,
-                fontWeight: selectedCategory === label ? 600 : 400,
-                color: selectedCategory === label ? '#e87afc' : '#000',
-                textShadow:
-                  selectedCategory === label
-                    ? '0 0 6px #e87afc'
-                    : '0 0 3px rgba(0,0,0,0.1)',
-                letterSpacing: '1.5px',
-              }}
-            >
-              {label}
-            </Typography>
-          </Box>
-        ))}
-      </Box>
+      />
 
       {/* Productos */}
       <Grid container spacing={3} justifyContent="center">
