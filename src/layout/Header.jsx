@@ -45,17 +45,18 @@ export default function Header() {
           sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}
           onClick={() => navigate('/')}
         >
-          <Box
-            component="img"
-            src={logo}
-            alt="Hannah Logo"
-            sx={{
-              width: { xs: 60, md: 80 },
-              height: { xs: 50, md: 70 },
-              objectFit: 'cover',
-              borderRadius: '8px',
-            }}
-          />
+        <Box
+        component="img"
+        src={logo}
+        alt="Hannah Logo"
+        sx={{
+          width: { xs: 100, md: 90 },
+          height: { xs: 90, md: 90 },
+          objectFit: 'cover',
+          borderRadius: '8px',
+        }}
+      />
+
           <Box sx={{ ml: 2, display: 'flex', flexDirection: 'column' }}>
        <Typography
           variant="h5"

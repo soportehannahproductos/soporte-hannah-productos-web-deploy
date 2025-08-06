@@ -37,7 +37,7 @@ export default function Catalog() {
   Muebles: <CheckroomIcon />,
   Artefactos: <HeadphonesIcon />,
   Electrodomésticos: <PowerIcon />,
-  reloj: <LightbulbIcon />,
+  Reloj: <LightbulbIcon />,
   Hogar: <BuildIcon />,
 }
 
